@@ -7,5 +7,14 @@
     "image": null,
     "likes": 1,
     "createdAt": "2026-07-01T10:00:00.000Z"
+  },
+  {
+    "id": "1785293688078",
+    "quote": "hello",
+    "author": "raju",
+    "meta": "testing",
+    "image": null,
+    "likes": 0,
+    "createdAt": "2026-07-29T02:54:48.078Z"
   }
 ]
