@@ -1,19 +1,14 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs/promises';
-import path from 'path';
+import { getStore } from '@netlify/blobs';
 import { isAuthorized, unauthorizedResponse } from '@/lib/auth';
 
-// Must run on the Node runtime (not Edge) since we touch the filesystem.
 export const runtime = 'nodejs';
 
-// NOTE: like the JSON blog store, this saves files to disk under
-// public/uploads/. That works great locally and on a normal Node server
-// with persistent storage, but serverless hosts (e.g. Vercel) have a
-// read-only filesystem at runtime, so uploads would fail or vanish there.
-// For serverless deployment, swap this for a real object store (S3,
-// Cloudflare R2, Vercel Blob, etc.) and return that URL instead.
+// Images are stored as binary blobs in Netlify Blobs (store: "images"),
+// keyed by a generated filename. They're served back out through
+// /api/uploads/[filename] (see that route) since we can no longer write
+// into public/uploads on a read-only filesystem.
 
-const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads');
 const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 
@@ -45,16 +40,17 @@ export async function POST(request) {
   }
 
   try {
-    await fs.mkdir(UPLOAD_DIR, { recursive: true });
-
-    const ext = path.extname(file.name || '') || `.${file.type.split('/')[1]}`;
-    const safeName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}${ext}`;
-    const filePath = path.join(UPLOAD_DIR, safeName);
+    const ext = (file.name?.split('.').pop() || file.type.split('/')[1] || 'bin').toLowerCase();
+    const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
 
     const buffer = Buffer.from(await file.arrayBuffer());
-    await fs.writeFile(filePath, buffer);
 
-    return NextResponse.json({ url: `/uploads/${safeName}` }, { status: 201 });
+    const store = getStore('images');
+    await store.set(filename, buffer, {
+      metadata: { contentType: file.type },
+    });
+
+    return NextResponse.json({ url: `/api/uploads/${filename}` }, { status: 201 });
   } catch (err) {
     console.error(err);
     return NextResponse.json({ error: 'Failed to save image' }, { status: 500 });
