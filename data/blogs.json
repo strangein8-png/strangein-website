@@ -70,7 +70,7 @@
     "featured": false,
     "gold": false,
     "grad": "g5",
-    "likes": 187,
+    "likes": 188,
     "title": "A weekend in Araku Valley for under ₹4,000",
     "excerpt": "Train tickets, homestays, coffee plantations and one very foggy sunrise — the full budget breakdown.",
     "content": "Train tickets, homestays, coffee plantations and one very foggy sunrise — the full budget breakdown.",
@@ -78,22 +78,5 @@
     "author": "Rahul D.",
     "meta": "7 min read · 2 weeks ago",
     "createdAt": "2026-07-01T10:00:00.000Z"
-  },
-  {
-    "id": "1784100371883",
-    "slug": "sravan",
-    "cat": "Life",
-    "featured": false,
-    "gold": false,
-    "grad": "g1",
-    "likes": 1,
-    "title": "sravan",
-    "excerpt": "hello",
-    "content": "hello world i'm a new website for you",
-    "initials": "S",
-    "author": "sravan",
-    "meta": "New",
-    "createdAt": "2026-07-15T07:26:11.884Z",
-    "image": "/uploads/1784102426201-1j7v13.jpeg"
   }
 ]

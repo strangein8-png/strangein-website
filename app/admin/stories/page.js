@@ -5,25 +5,19 @@ import Link from 'next/link';
 
 const EMPTY_FORM = {
   id: null,
-  title: '',
-  excerpt: '',
-  content: '',
-  cat: 'Travel',
+  quote: '',
   author: '',
-  initials: '',
   meta: '',
-  featured: false,
-  gold: false,
   image: '',
 };
 
-export default function AdminBlogsPage() {
+export default function AdminStoriesPage() {
   const [adminKey, setAdminKey] = useState('');
   const [keySaved, setKeySaved] = useState(false);
   const [checkingSavedKey, setCheckingSavedKey] = useState(true);
   const [loginError, setLoginError] = useState('');
   const [loggingIn, setLoggingIn] = useState(false);
-  const [blogs, setBlogs] = useState([]);
+  const [stories, setStories] = useState([]);
   const [form, setForm] = useState(EMPTY_FORM);
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(false);
@@ -39,6 +33,8 @@ export default function AdminBlogsPage() {
 
   useEffect(() => {
     async function checkSavedKey() {
+      // Shares the same cached key as /admin/blogs — one admin session
+      // works across both admin pages.
       const saved = sessionStorage.getItem('adminKey');
       if (saved) {
         const valid = await verifyKey(saved);
@@ -46,8 +42,6 @@ export default function AdminBlogsPage() {
           setAdminKey(saved);
           setKeySaved(true);
         } else {
-          // A stale/incorrect key was cached from before this fix —
-          // clear it so the person has to re-authenticate for real.
           sessionStorage.removeItem('adminKey');
         }
       }
@@ -57,16 +51,16 @@ export default function AdminBlogsPage() {
   }, []);
 
   useEffect(() => {
-    if (keySaved) loadBlogs();
+    if (keySaved) loadStories();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [keySaved]);
 
-  async function loadBlogs() {
+  async function loadStories() {
     setLoading(true);
     try {
-      const res = await fetch('/api/blogs');
+      const res = await fetch('/api/stories');
       const data = await res.json();
-      setBlogs(data.blogs || []);
+      setStories(data.stories || []);
     } finally {
       setLoading(false);
     }
@@ -134,7 +128,7 @@ export default function AdminBlogsPage() {
       setStatus('Network error while uploading image.');
     } finally {
       setUploading(false);
-      e.target.value = ''; // allow re-selecting the same file later
+      e.target.value = '';
     }
   }
 
@@ -142,19 +136,13 @@ export default function AdminBlogsPage() {
     updateField('image', '');
   }
 
-  function startEdit(blog) {
+  function startEdit(story) {
     setForm({
-      id: blog.id,
-      title: blog.title,
-      excerpt: blog.excerpt,
-      content: blog.content || '',
-      cat: blog.cat,
-      author: blog.author,
-      initials: blog.initials,
-      meta: blog.meta,
-      featured: !!blog.featured,
-      gold: !!blog.gold,
-      image: blog.image || '',
+      id: story.id,
+      quote: story.quote,
+      author: story.author,
+      meta: story.meta,
+      image: story.image || '',
     });
     setStatus('');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -169,7 +157,7 @@ export default function AdminBlogsPage() {
     setStatus('Saving…');
 
     const isEdit = Boolean(form.id);
-    const url = isEdit ? `/api/blogs/${form.id}` : '/api/blogs';
+    const url = isEdit ? `/api/stories/${form.id}` : '/api/stories';
     const method = isEdit ? 'PUT' : 'POST';
 
     try {
@@ -188,21 +176,21 @@ export default function AdminBlogsPage() {
         return;
       }
 
-      setStatus(isEdit ? 'Blog updated.' : 'Blog published.');
+      setStatus(isEdit ? 'Story updated.' : 'Story published.');
       resetForm();
-      loadBlogs();
-    } catch (err) {
+      loadStories();
+    } catch {
       setStatus('Network error — is the dev server running?');
     }
   }
 
   async function handleDelete(id) {
-    if (!confirm('Delete this blog?')) return;
-    const res = await fetch(`/api/blogs/${id}`, {
+    if (!confirm('Delete this story?')) return;
+    const res = await fetch(`/api/stories/${id}`, {
       method: 'DELETE',
       headers: { 'x-admin-key': adminKey },
     });
-    if (res.ok) loadBlogs();
+    if (res.ok) loadStories();
     else {
       const data = await res.json().catch(() => ({}));
       alert(data.error || 'Failed to delete.');
@@ -249,16 +237,16 @@ export default function AdminBlogsPage() {
     <main style={styles.page}>
       <div style={{ ...styles.card, maxWidth: 720 }}>
         <nav style={styles.tabRow}>
-          <span style={styles.tabLinkActive}>Blogs</span>
-          <Link href="/admin/stories" style={styles.tabLink}>
-            Stories
+          <Link href="/admin/blogs" style={styles.tabLink}>
+            Blogs
           </Link>
+          <span style={styles.tabLinkActive}>Stories</span>
         </nav>
       </div>
 
       <div style={{ ...styles.card, maxWidth: 720 }}>
         <div style={styles.headerRow}>
-          <h1 style={styles.h1}>{form.id ? 'Edit blog' : 'Write a new blog'}</h1>
+          <h1 style={styles.h1}>{form.id ? 'Edit story' : 'Write a new story'}</h1>
           <button style={styles.btnGhost} onClick={logout}>
             Sign out
           </button>
@@ -266,31 +254,12 @@ export default function AdminBlogsPage() {
 
         <form onSubmit={handleSubmit} style={styles.form}>
           <label style={styles.label}>
-            Title
-            <input
-              style={styles.input}
-              value={form.title}
-              onChange={(e) => updateField('title', e.target.value)}
-              required
-            />
-          </label>
-
-          <label style={styles.label}>
-            Excerpt (short summary shown on the card)
+            Quote
             <textarea
-              style={{ ...styles.input, ...styles.textarea, minHeight: 70 }}
-              value={form.excerpt}
-              onChange={(e) => updateField('excerpt', e.target.value)}
-              required
-            />
-          </label>
-
-          <label style={styles.label}>
-            Content
-            <textarea
-              style={{ ...styles.input, ...styles.textarea, minHeight: 180 }}
-              value={form.content}
-              onChange={(e) => updateField('content', e.target.value)}
+              style={{ ...styles.input, ...styles.textarea, minHeight: 100 }}
+              value={form.quote}
+              onChange={(e) => updateField('quote', e.target.value)}
+              placeholder="We matched over a blog about street food…"
               required
             />
           </label>
@@ -319,73 +288,29 @@ export default function AdminBlogsPage() {
 
           <div style={styles.row}>
             <label style={{ ...styles.label, flex: 1 }}>
-              Category
-              <select
-                style={styles.input}
-                value={form.cat}
-                onChange={(e) => updateField('cat', e.target.value)}
-              >
-                {['Travel', 'Food', 'Life', 'Art'].map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label style={{ ...styles.label, flex: 1 }}>
-              Author
+              Names
               <input
                 style={styles.input}
                 value={form.author}
                 onChange={(e) => updateField('author', e.target.value)}
+                placeholder="Meghana & Vikram"
                 required
               />
             </label>
-          </div>
-
-          <div style={styles.row}>
             <label style={{ ...styles.label, flex: 1 }}>
-              Initials (optional)
-              <input
-                style={styles.input}
-                value={form.initials}
-                onChange={(e) => updateField('initials', e.target.value)}
-                maxLength={3}
-              />
-            </label>
-            <label style={{ ...styles.label, flex: 1 }}>
-              Meta text (optional, e.g. &ldquo;5 min read · today&rdquo;)
+              Context (optional)
               <input
                 style={styles.input}
                 value={form.meta}
                 onChange={(e) => updateField('meta', e.target.value)}
+                placeholder="Matched on Strange In"
               />
-            </label>
-          </div>
-
-          <div style={styles.row}>
-            <label style={styles.checkboxLabel}>
-              <input
-                type="checkbox"
-                checked={form.featured}
-                onChange={(e) => updateField('featured', e.target.checked)}
-              />
-              Featured (large card)
-            </label>
-            <label style={styles.checkboxLabel}>
-              <input
-                type="checkbox"
-                checked={form.gold}
-                onChange={(e) => updateField('gold', e.target.checked)}
-              />
-              Gold category badge
             </label>
           </div>
 
           <div style={styles.row}>
             <button style={styles.btnPrimary} type="submit" disabled={uploading}>
-              {form.id ? 'Save changes' : 'Publish blog'}
+              {form.id ? 'Save changes' : 'Publish story'}
             </button>
             {form.id && (
               <button type="button" style={styles.btnGhost} onClick={resetForm}>
@@ -398,27 +323,28 @@ export default function AdminBlogsPage() {
       </div>
 
       <div style={{ ...styles.card, maxWidth: 720 }}>
-        <h2 style={styles.h2}>Existing blogs {loading && '(loading…)'}</h2>
+        <h2 style={styles.h2}>Existing stories {loading && '(loading…)'}</h2>
         <div style={styles.list}>
-          {blogs.map((b) => (
-            <div key={b.id} style={styles.listItem}>
+          {stories.map((s) => (
+            <div key={s.id} style={styles.listItem}>
               <div>
-                <strong>{b.title}</strong>
+                <strong>{s.author}</strong>
                 <div style={styles.muted}>
-                  {b.cat} · {b.author} · ♥ {b.likes}
+                  {s.quote.slice(0, 60)}
+                  {s.quote.length > 60 ? '…' : ''} · ♥ {s.likes}
                 </div>
               </div>
               <div style={styles.row}>
-                <button style={styles.btnGhost} onClick={() => startEdit(b)}>
+                <button style={styles.btnGhost} onClick={() => startEdit(s)}>
                   Edit
                 </button>
-                <button style={styles.btnDanger} onClick={() => handleDelete(b.id)}>
+                <button style={styles.btnDanger} onClick={() => handleDelete(s.id)}>
                   Delete
                 </button>
               </div>
             </div>
           ))}
-          {!loading && blogs.length === 0 && <p style={styles.muted}>No blogs yet.</p>}
+          {!loading && stories.length === 0 && <p style={styles.muted}>No stories yet.</p>}
         </div>
       </div>
     </main>
@@ -487,7 +413,6 @@ const styles = {
     border: '1px solid rgba(255,255,255,0.08)',
   },
   row: { display: 'flex', gap: 12, alignItems: 'center' },
-  checkboxLabel: { display: 'flex', gap: 8, alignItems: 'center', fontSize: '0.85rem' },
   btnPrimary: {
     background: 'linear-gradient(135deg, #FF3E6C, #FF6B8A)',
     border: 'none',
