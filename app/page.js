@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Reveal from '@/components/Reveal';
 import BlogsSection from '@/components/BlogsSection';
+import StoriesSection from '@/components/StoriesSection';
 
 const FEATURES = [
   {
@@ -176,7 +177,7 @@ export default function Home() {
       <BlogsSection />
 
       {/* ===== STORY BAND ===== */}
-      <section className="band" id="stories">
+      {/* <section className="band" id="stories">
         <Reveal>
           <blockquote>
             &ldquo;We matched over a blog about street food. Six months later,
@@ -185,7 +186,9 @@ export default function Home() {
           </blockquote>
           <cite>— Meghana &amp; Vikram, matched on Strange In</cite>
         </Reveal>
-      </section>
+      </section> */}
+      {/* ===== STORIES ===== */}
+      <StoriesSection />
 
       {/* ===== DOWNLOAD ===== */}
       <section className="download" id="download">

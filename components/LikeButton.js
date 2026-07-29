@@ -2,7 +2,13 @@
 
 import { useState } from 'react';
 
-export default function LikeButton({ id, initialLikes = 0, className = 'blog-like' }) {
+export default function LikeButton({
+  id,
+  initialLikes = 0,
+  className = 'blog-like',
+  endpoint = 'blogs', // 'blogs' or 'stories' — which API collection this belongs to
+  resourceKey = 'blog', // the key the API returns the updated item under
+}) {
   const [likes, setLikes] = useState(initialLikes);
   const [liked, setLiked] = useState(false);
 
@@ -15,10 +21,10 @@ export default function LikeButton({ id, initialLikes = 0, className = 'blog-lik
     setLiked(true);
 
     try {
-      const res = await fetch(`/api/blogs/${id}/like`, { method: 'POST' });
+      const res = await fetch(`/api/${endpoint}/${id}/like`, { method: 'POST' });
       if (!res.ok) throw new Error('Failed to like');
       const data = await res.json();
-      setLikes(data.blog.likes);
+      setLikes(data[resourceKey].likes);
     } catch {
       setLikes((n) => n - 1);
       setLiked(false);
@@ -30,7 +36,7 @@ export default function LikeButton({ id, initialLikes = 0, className = 'blog-lik
       type="button"
       className={className}
       onClick={handleLike}
-      aria-label="Like this blog"
+      aria-label="Like this"
       aria-pressed={liked}
       style={{ cursor: liked ? 'default' : 'pointer', border: 'none', font: 'inherit' }}
     >
