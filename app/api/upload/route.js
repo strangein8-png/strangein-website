@@ -1,19 +1,18 @@
 import { NextResponse } from 'next/server';
-import { getStore } from '@netlify/blobs';
+import { v2 as cloudinary } from 'cloudinary';
 import { isAuthorized, unauthorizedResponse } from '@/lib/auth';
 
 export const runtime = 'nodejs';
 
-// Images are stored as binary blobs in Netlify Blobs (store: "images"),
-// keyed by a generated filename. They're served back out through
-// /api/uploads/[filename] (see that route) since we can no longer write
-// into public/uploads on a read-only filesystem.
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 
-// POST /api/upload  (protected — requires x-admin-key header)
-// Expects multipart/form-data with a field named "image".
 export async function POST(request) {
   if (!isAuthorized(request)) return unauthorizedResponse();
 
@@ -40,19 +39,19 @@ export async function POST(request) {
   }
 
   try {
-    const ext = (file.name?.split('.').pop() || file.type.split('/')[1] || 'bin').toLowerCase();
-    const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-
     const buffer = Buffer.from(await file.arrayBuffer());
+    const base64 = `data:${file.type};base64,${buffer.toString('base64')}`;
 
-    const store = getStore('images');
-    await store.set(filename, buffer, {
-      metadata: { contentType: file.type },
+    const result = await cloudinary.uploader.upload(base64, {
+      folder: 'strangein-images',
+      resource_type: 'image',
     });
 
-    return NextResponse.json({ url: `/api/uploads/${filename}` }, { status: 201 });
+    // result.secure_url is a permanent, publicly served CDN URL —
+    // no need for a separate /api/uploads/[filename] route anymore.
+    return NextResponse.json({ url: result.secure_url }, { status: 201 });
   } catch (err) {
     console.error(err);
-    return NextResponse.json({ error: 'Failed to save image' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to upload image' }, { status: 500 });
   }
 }
