@@ -12,6 +12,7 @@ export default function Nav() {
       <Link className="nav-logo" href="/">
         Strange <em>In</em>
       </Link>
+
       <button
         className="nav-toggle"
         aria-label={open ? 'Close menu' : 'Open menu'}
@@ -20,12 +21,12 @@ export default function Nav() {
       >
         {open ? '✕' : '☰'}
       </button>
+
       <div className={`nav-links ${open ? 'open' : ''}`}>
-        <Link href="/#features" onClick={close}>Features</Link>
-        <Link href="/#blogs" onClick={close}>Blogs</Link>
-        <Link href="/#stories" onClick={close}>Stories</Link>
-        {/* <Link href="/admin/blogs" onClick={close}>Write a blog</Link> */}
-        <Link href="/#download" className="nav-cta" onClick={close}>Get the app</Link>
+        <Link href="/features" onClick={close}>Features</Link>
+        <Link href="/blogs" onClick={close}>Blogs</Link>
+        <Link href="/stories" onClick={close}>Stories</Link>
+        <Link href="/download" className="nav-cta" onClick={close}>Get the app</Link>
       </div>
     </nav>
   );

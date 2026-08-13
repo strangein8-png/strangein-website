@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Reveal from '@/components/Reveal';
 import BlogsSection from '@/components/BlogsSection';
 import StoriesSection from '@/components/StoriesSection';
+import ScrollToSection from '@/components/ScrollToSection';
 
 const FEATURES = [
   {
@@ -63,6 +64,8 @@ const FEATURES = [
 export default function Home() {
   return (
     <main>
+      <ScrollToSection />
+
       {/* ===== HERO ===== */}
       <header className="hero" id="top">
         <div>
@@ -78,10 +81,10 @@ export default function Home() {
             chat, and share your world through blogs — all in one place.
           </p>
           <div className="hero-actions">
-            <Link className="btn-primary" href="/#download">
+            <Link className="btn-primary" href="/download">
               Download Strange In
             </Link>
-            <Link className="btn-ghost" href="/#blogs">
+            <Link className="btn-ghost" href="/blogs">
               Read the blogs
             </Link>
           </div>
@@ -174,21 +177,14 @@ export default function Home() {
       </section>
 
       {/* ===== BLOGS ===== */}
-      <BlogsSection />
+      <div id="blogs">
+        <BlogsSection />
+      </div>
 
-      {/* ===== STORY BAND ===== */}
-      {/* <section className="band" id="stories">
-        <Reveal>
-          <blockquote>
-            &ldquo;We matched over a blog about street food. Six months later,
-            we&rsquo;re still <em>arguing</em> about the best dosa in the
-            city.&rdquo;
-          </blockquote>
-          <cite>— Meghana &amp; Vikram, matched on Strange In</cite>
-        </Reveal>
-      </section> */}
       {/* ===== STORIES ===== */}
-      <StoriesSection />
+      <div id="stories">
+        <StoriesSection />
+      </div>
 
       {/* ===== DOWNLOAD ===== */}
       <section className="download" id="download">
