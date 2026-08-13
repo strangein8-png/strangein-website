@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import ContactModal from './ContactModal';
 
 export default function Footer() {
   return (
@@ -22,8 +23,7 @@ export default function Footer() {
         <div className="foot-col">
           <h4>Company</h4>
           <Link href="/">About us</Link>
-          <Link href="/">Careers</Link>
-          <Link href="/">Contact</Link>
+          <ContactModal />
         </div>
         <div className="foot-col">
           <h4>Legal</h4>
