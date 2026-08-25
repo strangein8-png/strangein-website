@@ -16,9 +16,9 @@ export default function Footer() {
         </div>
         <div className="foot-col">
           <h4>App</h4>
-          <Link href="/#features">Features</Link>
-          <Link href="/#blogs">Blogs</Link>
-          <Link href="/#download">Download</Link>
+          <Link href="/features">Features</Link>
+          <Link href="/blogs">Blogs</Link>
+          <Link href="/download">Download</Link>
         </div>
         <div className="foot-col">
           <h4>Company</h4>

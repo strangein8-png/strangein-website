@@ -603,3 +603,151 @@ h2 em { font-style: italic; color: var(--rose); }
 .story-like {
   position: static;
 }
+
+.comments-section {
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid #f0e9eb;
+}
+
+.comments-title {
+  font-size: 1.15rem;
+  margin: 0 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--bg);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 28px;
+}
+
+.comment-input,
+.comment-textarea {
+  border: 1px solid #e2dcde;
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: 0.92rem;
+  font-family: inherit;
+  background: #fff;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.comment-input:focus,
+.comment-textarea:focus {
+  outline: none;
+  border-color: var(--rose);
+}
+
+.comment-textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.comment-error {
+  color: #c1273a;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.comment-form .btn-primary {
+  align-self: flex-start;
+  border: none;
+  cursor: pointer;
+  font-size: 0.92rem;
+}
+
+.comment-form .btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.comment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.comment-item {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  background: #fff;
+  border: 1px solid #f0e9eb;
+  border-radius: 14px;
+}
+
+.comment-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--rose-light);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.comment-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.comment-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+}
+
+.comment-item strong {
+  font-size: 0.9rem;
+}
+
+.comment-date {
+  color: #aaa;
+  font-size: 0.75rem;
+}
+
+.comment-item p {
+  margin: 0;
+  color: #444;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Story cards: comments live inside a compact card, so tighten things up */
+.story-comments-toggle {
+  margin-top: 14px;
+  padding: 7px 16px;
+  font-size: 0.82rem;
+  border-radius: 999px;
+}
+
+.story-card .comments-section {
+  margin-top: 18px;
+  padding-top: 18px;
+  text-align: left;
+}
+
+.story-card .comment-form {
+  padding: 14px;
+  margin-bottom: 18px;
+}
+
+.story-card .comments-title {
+  font-size: 0.95rem;
+}

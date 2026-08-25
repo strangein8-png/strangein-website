@@ -3,6 +3,7 @@ import Reveal from '@/components/Reveal';
 import BlogsSection from '@/components/BlogsSection';
 import StoriesSection from '@/components/StoriesSection';
 import ScrollToSection from '@/components/ScrollToSection';
+import EventsSection from '@/components/EventsSection';
 
 const FEATURES = [
   {
@@ -184,6 +185,11 @@ export default function Home() {
       {/* ===== STORIES ===== */}
       <div id="stories">
         <StoriesSection />
+      </div>
+
+      {/* ===== EVENTS ===== */}
+      <div id="events">
+        <EventsSection  />
       </div>
 
       {/* ===== DOWNLOAD ===== */}

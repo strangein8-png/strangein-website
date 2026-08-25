@@ -5,19 +5,22 @@ import Link from 'next/link';
 
 const EMPTY_FORM = {
   id: null,
-  quote: '',
-  author: '',
-  meta: '',
+  title: '',
+  description: '',
+  eventDate: '',
+  location: '',
+  link: '',
+  organizer: '',
   image: '',
 };
 
-export default function AdminStoriesPage() {
+export default function AdminEventsPage() {
   const [adminKey, setAdminKey] = useState('');
   const [keySaved, setKeySaved] = useState(false);
   const [checkingSavedKey, setCheckingSavedKey] = useState(true);
   const [loginError, setLoginError] = useState('');
   const [loggingIn, setLoggingIn] = useState(false);
-  const [stories, setStories] = useState([]);
+  const [events, setEvents] = useState([]);
   const [form, setForm] = useState(EMPTY_FORM);
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(false);
@@ -33,8 +36,6 @@ export default function AdminStoriesPage() {
 
   useEffect(() => {
     async function checkSavedKey() {
-      // Shares the same cached key as /admin/blogs — one admin session
-      // works across both admin pages.
       const saved = sessionStorage.getItem('adminKey');
       if (saved) {
         const valid = await verifyKey(saved);
@@ -51,16 +52,16 @@ export default function AdminStoriesPage() {
   }, []);
 
   useEffect(() => {
-    if (keySaved) loadStories();
+    if (keySaved) loadEvents();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [keySaved]);
 
-  async function loadStories() {
+  async function loadEvents() {
     setLoading(true);
     try {
-      const res = await fetch('/api/stories');
+      const res = await fetch('/api/events');
       const data = await res.json();
-      setStories(data.stories || []);
+      setEvents(data.events || []);
     } finally {
       setLoading(false);
     }
@@ -73,7 +74,6 @@ export default function AdminStoriesPage() {
     }
     setLoggingIn(true);
     setLoginError('');
-
     try {
       const valid = await verifyKey(adminKey);
       if (!valid) {
@@ -122,7 +122,6 @@ export default function AdminStoriesPage() {
         setStatus(data.error || 'Image upload failed.');
         return;
       }
-
       updateField('image', data.url);
     } catch {
       setStatus('Network error while uploading image.');
@@ -136,13 +135,16 @@ export default function AdminStoriesPage() {
     updateField('image', '');
   }
 
-  function startEdit(story) {
+  function startEdit(ev) {
     setForm({
-      id: story.id,
-      quote: story.quote,
-      author: story.author,
-      meta: story.meta,
-      image: story.image || '',
+      id: ev.id,
+      title: ev.title,
+      description: ev.description,
+      eventDate: ev.eventDate ? new Date(ev.eventDate).toISOString().slice(0, 16) : '',
+      location: ev.location,
+      link: ev.link || '',
+      organizer: ev.organizer || '',
+      image: ev.image || '',
     });
     setStatus('');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -157,7 +159,7 @@ export default function AdminStoriesPage() {
     setStatus('Saving…');
 
     const isEdit = Boolean(form.id);
-    const url = isEdit ? `/api/stories/${form.id}` : '/api/stories';
+    const url = isEdit ? `/api/events/${form.id}` : '/api/events';
     const method = isEdit ? 'PUT' : 'POST';
 
     try {
@@ -176,21 +178,21 @@ export default function AdminStoriesPage() {
         return;
       }
 
-      setStatus(isEdit ? 'Story updated.' : 'Story published.');
+      setStatus(isEdit ? 'Event updated.' : 'Event published.');
       resetForm();
-      loadStories();
+      loadEvents();
     } catch {
       setStatus('Network error — is the dev server running?');
     }
   }
 
   async function handleDelete(id) {
-    if (!confirm('Delete this story?')) return;
-    const res = await fetch(`/api/stories/${id}`, {
+    if (!confirm('Delete this event?')) return;
+    const res = await fetch(`/api/events/${id}`, {
       method: 'DELETE',
       headers: { 'x-admin-key': adminKey },
     });
-    if (res.ok) loadStories();
+    if (res.ok) loadEvents();
     else {
       const data = await res.json().catch(() => ({}));
       alert(data.error || 'Failed to delete.');
@@ -237,19 +239,19 @@ export default function AdminStoriesPage() {
     <main style={styles.page}>
       <div style={{ ...styles.card, maxWidth: 720 }}>
         <nav style={styles.tabRow}>
-  <Link href="/admin/blogs" style={styles.tabLink}>
-    Blogs
-  </Link>
-  <span style={styles.tabLinkActive}>Stories</span>
-  <Link href="/admin/events" style={styles.tabLink}>
-    Events
-  </Link>
-</nav>
+          <Link href="/admin/blogs" style={styles.tabLink}>
+            Blogs
+          </Link>
+          <Link href="/admin/stories" style={styles.tabLink}>
+            Stories
+          </Link>
+          <span style={styles.tabLinkActive}>Events</span>
+        </nav>
       </div>
 
       <div style={{ ...styles.card, maxWidth: 720 }}>
         <div style={styles.headerRow}>
-          <h1 style={styles.h1}>{form.id ? 'Edit story' : 'Write a new story'}</h1>
+          <h1 style={styles.h1}>{form.id ? 'Edit event' : 'Create a new event'}</h1>
           <button style={styles.btnGhost} onClick={logout}>
             Sign out
           </button>
@@ -257,15 +259,67 @@ export default function AdminStoriesPage() {
 
         <form onSubmit={handleSubmit} style={styles.form}>
           <label style={styles.label}>
-            Quote
-            <textarea
-              style={{ ...styles.input, ...styles.textarea, minHeight: 100 }}
-              value={form.quote}
-              onChange={(e) => updateField('quote', e.target.value)}
-              placeholder="We matched over a blog about street food…"
+            Title
+            <input
+              style={styles.input}
+              value={form.title}
+              onChange={(e) => updateField('title', e.target.value)}
               required
             />
           </label>
+
+          <label style={styles.label}>
+            Description
+            <textarea
+              style={{ ...styles.input, ...styles.textarea, minHeight: 120 }}
+              value={form.description}
+              onChange={(e) => updateField('description', e.target.value)}
+              required
+            />
+          </label>
+
+          <div style={styles.row}>
+            <label style={{ ...styles.label, flex: 1 }}>
+              Date &amp; time
+              <input
+                style={styles.input}
+                type="datetime-local"
+                value={form.eventDate}
+                onChange={(e) => updateField('eventDate', e.target.value)}
+                required
+              />
+            </label>
+            <label style={{ ...styles.label, flex: 1 }}>
+              Location
+              <input
+                style={styles.input}
+                value={form.location}
+                onChange={(e) => updateField('location', e.target.value)}
+                required
+              />
+            </label>
+          </div>
+
+          <div style={styles.row}>
+            <label style={{ ...styles.label, flex: 1 }}>
+              Organizer (optional)
+              <input
+                style={styles.input}
+                value={form.organizer}
+                onChange={(e) => updateField('organizer', e.target.value)}
+                placeholder="Strange In"
+              />
+            </label>
+            <label style={{ ...styles.label, flex: 1 }}>
+              Registration link (optional)
+              <input
+                style={styles.input}
+                value={form.link}
+                onChange={(e) => updateField('link', e.target.value)}
+                placeholder="https://..."
+              />
+            </label>
+          </div>
 
           <label style={styles.label}>
             Cover image (optional)
@@ -290,30 +344,8 @@ export default function AdminStoriesPage() {
           )}
 
           <div style={styles.row}>
-            <label style={{ ...styles.label, flex: 1 }}>
-              Names
-              <input
-                style={styles.input}
-                value={form.author}
-                onChange={(e) => updateField('author', e.target.value)}
-                placeholder="Meghana & Vikram"
-                required
-              />
-            </label>
-            <label style={{ ...styles.label, flex: 1 }}>
-              Context (optional)
-              <input
-                style={styles.input}
-                value={form.meta}
-                onChange={(e) => updateField('meta', e.target.value)}
-                placeholder="Matched on Strange In"
-              />
-            </label>
-          </div>
-
-          <div style={styles.row}>
             <button style={styles.btnPrimary} type="submit" disabled={uploading}>
-              {form.id ? 'Save changes' : 'Publish story'}
+              {form.id ? 'Save changes' : 'Publish event'}
             </button>
             {form.id && (
               <button type="button" style={styles.btnGhost} onClick={resetForm}>
@@ -326,28 +358,27 @@ export default function AdminStoriesPage() {
       </div>
 
       <div style={{ ...styles.card, maxWidth: 720 }}>
-        <h2 style={styles.h2}>Existing stories {loading && '(loading…)'}</h2>
+        <h2 style={styles.h2}>Existing events {loading && '(loading…)'}</h2>
         <div style={styles.list}>
-          {stories.map((s) => (
-            <div key={s.id} style={styles.listItem}>
+          {events.map((ev) => (
+            <div key={ev.id} style={styles.listItem}>
               <div>
-                <strong>{s.author}</strong>
+                <strong>{ev.title}</strong>
                 <div style={styles.muted}>
-                  {s.quote.slice(0, 60)}
-                  {s.quote.length > 60 ? '…' : ''} · ♥ {s.likes}
+                  {new Date(ev.eventDate).toLocaleString()} · {ev.location} · ♥ {ev.likes}
                 </div>
               </div>
               <div style={styles.row}>
-                <button style={styles.btnGhost} onClick={() => startEdit(s)}>
+                <button style={styles.btnGhost} onClick={() => startEdit(ev)}>
                   Edit
                 </button>
-                <button style={styles.btnDanger} onClick={() => handleDelete(s.id)}>
+                <button style={styles.btnDanger} onClick={() => handleDelete(ev.id)}>
                   Delete
                 </button>
               </div>
             </div>
           ))}
-          {!loading && stories.length === 0 && <p style={styles.muted}>No stories yet.</p>}
+          {!loading && events.length === 0 && <p style={styles.muted}>No events yet.</p>}
         </div>
       </div>
     </main>

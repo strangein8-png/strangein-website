@@ -3,11 +3,13 @@
 import { useEffect, useState } from 'react';
 import Reveal from './Reveal';
 import LikeButton from './LikeButton';
+import CommentsSection from './CommentsSection';
 
 export default function StoriesSection() {
   const [stories, setStories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [expanded, setExpanded] = useState(new Set());
 
   useEffect(() => {
     let cancelled = false;
@@ -32,6 +34,15 @@ export default function StoriesSection() {
     };
   }, []);
 
+  function toggleComments(id) {
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
   if (!loading && !error && stories.length === 0) return null;
 
   return (
@@ -53,9 +64,7 @@ export default function StoriesSection() {
             )}
             <blockquote>&ldquo;{story.quote}&rdquo;</blockquote>
             <figcaption>
-              
-                — {story.author}, {story.meta}
-              
+              — {story.author}, {story.meta}
               <LikeButton
                 id={story.id}
                 initialLikes={story.likes}
@@ -64,6 +73,18 @@ export default function StoriesSection() {
                 resourceKey="story"
               />
             </figcaption>
+
+            <button
+              type="button"
+              className="btn-ghost story-comments-toggle"
+              onClick={() => toggleComments(story.id)}
+            >
+              {expanded.has(story.id) ? 'Hide comments' : 'View comments'}
+            </button>
+
+            {expanded.has(story.id) && (
+              <CommentsSection id={story.id} endpoint="stories" />
+            )}
           </Reveal>
         ))}
       </div>

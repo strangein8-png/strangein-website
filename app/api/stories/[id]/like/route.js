@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { likeStory } from '@/lib/storiesStore';
+import { likeStory } from '@/lib/storiesApi';
 
 // POST /api/stories/:id/like — public, bumps the like counter by 1.
 export async function POST(_request, { params }) {
