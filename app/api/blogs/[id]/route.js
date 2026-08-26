@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getBlogById, updateBlog, deleteBlog } from '@/lib/blogsStore';
+import { getBlogById, updateBlog, deleteBlog } from '@/lib/blogsApi';
 import { isAuthorized, unauthorizedResponse } from '@/lib/auth';
 
 // GET /api/blogs/:id  (id or slug)

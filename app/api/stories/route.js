@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getStories, createStory } from '@/lib/storiesStore';
+import { getStories, createStory } from '@/lib/storiesApi';
 import { isAuthorized, unauthorizedResponse } from '@/lib/auth';
 
 // GET /api/stories

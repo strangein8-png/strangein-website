@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getBlogs, createBlog } from '@/lib/blogsStore';
+import { getBlogs, createBlog } from '@/lib/blogsApi';
 import { isAuthorized, unauthorizedResponse } from '@/lib/auth';
 
 // GET /api/blogs?category=Travel

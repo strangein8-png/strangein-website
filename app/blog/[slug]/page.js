@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getBlogById } from '@/lib/blogsStore';
+import { getBlogById } from '@/lib/blogsApi';
 import LikeButton from '@/components/LikeButton';
+import CommentsSection from '@/components/CommentsSection';
 
 export async function generateMetadata({ params }) {
   const blog = await getBlogById(params.slug);
@@ -19,7 +20,7 @@ export default async function BlogDetailPage({ params }) {
   return (
     <main className="blog-detail">
       <div className="blog-detail-inner">
-        <Link href="/#blogs" className="btn-ghost blog-back">
+        <Link href="/blogs" className="btn-ghost blog-back">
           ← Back to blogs
         </Link>
 
@@ -48,6 +49,8 @@ export default async function BlogDetailPage({ params }) {
         <div className="blog-detail-footer">
           <LikeButton id={blog.id} initialLikes={blog.likes} className="blog-like blog-like-standalone" />
         </div>
+
+        <CommentsSection id={blog.id} endpoint="blogs" />
       </div>
     </main>
   );

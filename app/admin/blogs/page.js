@@ -249,11 +249,14 @@ export default function AdminBlogsPage() {
     <main style={styles.page}>
       <div style={{ ...styles.card, maxWidth: 720 }}>
         <nav style={styles.tabRow}>
-          <span style={styles.tabLinkActive}>Blogs</span>
-          <Link href="/admin/stories" style={styles.tabLink}>
-            Stories
-          </Link>
-        </nav>
+  <span style={styles.tabLinkActive}>Blogs</span>
+  <Link href="/admin/stories" style={styles.tabLink}>
+    Stories
+  </Link>
+  <Link href="/admin/events" style={styles.tabLink}>
+    Events
+  </Link>
+</nav>
       </div>
 
       <div style={{ ...styles.card, maxWidth: 720 }}>
@@ -325,8 +328,7 @@ export default function AdminBlogsPage() {
                 value={form.cat}
                 onChange={(e) => updateField('cat', e.target.value)}
               >
-                {['Travel', 'Food', 'Life', 'Art'].map((c) => (
-                  <option key={c} value={c}>
+{['Technology', 'Lifestyle', 'Travel', 'Food', 'Fashion', 'Health', 'Art', 'Other'].map((c) => (                  <option key={c} value={c}>
                     {c}
                   </option>
                 ))}

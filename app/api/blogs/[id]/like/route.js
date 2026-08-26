@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { likeBlog } from '@/lib/blogsStore';
+import { likeBlog } from '@/lib/blogsApi';
 
 // POST /api/blogs/:id/like — public, bumps the like counter by 1.
 export async function POST(_request, { params }) {

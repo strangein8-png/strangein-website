@@ -6,7 +6,16 @@ import Link from 'next/link';
 import Reveal from './Reveal';
 import LikeButton from './LikeButton';
 
-const CATEGORIES = ['All', 'Travel', 'Food', 'Life', 'Art'];
+const CATEGORIES = ['All', 'Technology', 'Lifestyle', 'Travel', 'Food', 'Fashion', 'Health','Art', 'Other'];
+// Purely presentational: picks a gradient (g1–g5) for posts with no cover
+// image, deterministically from the post id so it doesn't flicker/change
+// between renders. Mongo doesn't store this — it never needs to.
+function gradClass(id) {
+  const str = String(id || '');
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) hash = (hash * 31 + str.charCodeAt(i)) % 5;
+  return `g${hash + 1}`;
+}
 
 export default function BlogsSection() {
   const router = useRouter();
@@ -88,7 +97,7 @@ export default function BlogsSection() {
               {post.image ? (
                 <img src={post.image} alt={post.title} className="blog-img-photo" />
               ) : (
-                <div className={`grad ${post.grad}`} />
+                <div className={`grad ${gradClass(post.id)}`} />
               )}
               <div className="orb" />
               <span className={`blog-cat ${post.gold ? 'gold' : ''}`}>{post.cat}</span>
