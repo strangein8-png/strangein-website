@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Reveal from './Reveal';
 import LikeButton from './LikeButton';
 
@@ -18,6 +19,7 @@ function formatEventDate(dateStr) {
 }
 
 export default function EventsSection() {
+  const router = useRouter();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -60,50 +62,37 @@ export default function EventsSection() {
       {error && <p className="section-sub">Couldn&rsquo;t load events right now.</p>}
 
       <div className="blogs-grid">
-        {events.map((ev) => {
-          const card = (
-            <>
-              <div className="blog-img">
-                {ev.image ? (
-                  <img src={ev.image} alt={ev.title} className="blog-img-photo" />
-                ) : (
-                  <div className={`grad ${gradClass(ev.id)}`} />
-                )}
-                <span className="blog-cat">{formatEventDate(ev.eventDate)}</span>
-                <LikeButton id={ev.id} initialLikes={ev.likes} endpoint="events" resourceKey="event" />
-              </div>
-              <div className="blog-body">
-                <h3 className="blog-title">{ev.title}</h3>
-                <p className="blog-excerpt">{ev.description}</p>
-                <div className="blog-author">
-                  <div className="av"><div>📍</div></div>
-                  <div className="who">
-                    <strong>{ev.location}</strong>
-                    <span>{ev.organizer}</span>
-                  </div>
+        {events.map((ev) => (
+          <Reveal
+            as="article"
+            key={ev.id}
+            className="blog-card"
+            onClick={() => router.push(`/event/${ev.id}`)}
+            style={{ cursor: 'pointer' }}
+          >
+            <div className="blog-img">
+              {ev.image ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={ev.image} alt={ev.title} className="blog-img-photo" />
+              ) : (
+                <div className={`grad ${gradClass(ev.id)}`} />
+              )}
+              <span className="blog-cat">{formatEventDate(ev.eventDate)}</span>
+              <LikeButton id={ev.id} initialLikes={ev.likes} endpoint="events" resourceKey="event" />
+            </div>
+            <div className="blog-body">
+              <h3 className="blog-title">{ev.title}</h3>
+              <p className="blog-excerpt">{ev.description}</p>
+              <div className="blog-author">
+                <div className="av"><div>📍</div></div>
+                <div className="who">
+                  <strong>{ev.location}</strong>
+                  <span>{ev.organizer}</span>
                 </div>
               </div>
-            </>
-          );
-
-          return ev.link ? (
-            <Reveal
-              as="a"
-              key={ev.id}
-              href={ev.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="blog-card"
-              style={{ cursor: 'pointer', textDecoration: 'none', color: 'inherit', display: 'block' }}
-            >
-              {card}
-            </Reveal>
-          ) : (
-            <Reveal as="article" key={ev.id} className="blog-card">
-              {card}
-            </Reveal>
-          );
-        })}
+            </div>
+          </Reveal>
+        ))}
       </div>
     </section>
   );
