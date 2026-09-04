@@ -751,3 +751,181 @@ h2 em { font-style: italic; color: var(--rose); }
 .story-card .comments-title {
   font-size: 0.95rem;
 }
+
+/*
+  Add these to your existing global stylesheet (wherever .blog-card,
+  .blogs-grid, .blog-cat etc. already live). They only add new classes —
+  nothing here overrides your existing blog/story styles.
+
+  Colors reuse your existing palette (#FF3E6C / #FF6B8A gradient,
+  #9A8FA3 muted text) so these should drop in without clashing.
+*/
+
+/* Category filter tabs above the events grid */
+.event-cat-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 20px 0 28px;
+}
+
+.event-cat-tab {
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
+  color: #9a8fa3;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.event-cat-tab:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.event-cat-tab.active {
+  background: linear-gradient(135deg, #ff3e6c, #ff6b8a);
+  color: white;
+  border-color: transparent;
+}
+
+/* Trending / live badges on the card thumbnail and detail hero */
+.event-badge {
+  position: absolute;
+  top: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: white;
+}
+
+.event-badge-trending {
+  right: 12px;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.event-badge-live {
+  right: 12px;
+  top: 40px;
+  background: #ff3e6c;
+}
+
+/* Category tag chips on cards / detail page */
+.event-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.event-tag {
+  font-size: 0.72rem;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(255, 62, 108, 0.12);
+  color: #ff6b8a;
+  border: 1px solid rgba(255, 62, 108, 0.3);
+}
+
+/* Price + "going" row on cards */
+.event-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  font-size: 0.85rem;
+}
+
+.event-price {
+  color: #f7eff1;
+  font-weight: 600;
+}
+
+.event-attendees {
+  color: #9a8fa3;
+}
+
+/* Key/value info block on the event detail page */
+.event-detail-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 24px 0;
+  padding: 18px 20px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.event-detail-info-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.92rem;
+}
+
+.event-detail-info-row span {
+  color: #9a8fa3;
+}
+
+/* Ticket tier cards on the event detail page */
+.event-tiers {
+  margin: 28px 0;
+}
+
+.event-tiers-heading {
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+}
+
+.event-tier-card {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.event-tier-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1rem;
+}
+
+.event-tier-perks {
+  margin: 10px 0 0;
+  padding-left: 18px;
+  color: #9a8fa3;
+  font-size: 0.85rem;
+}
+
+.event-tier-spots {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 0.78rem;
+  color: #ff6b8a;
+}
+
+.nav-logo-img {
+  display: block;
+  border-radius: 8px; /* remove if you don't want rounded corners */
+}
+ 
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+ 
+.nav-logo-text {
+  font-size: 1.1rem;
+  white-space: nowrap;
+}
+ 
+.foot-logo-img {
+  display: block;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}

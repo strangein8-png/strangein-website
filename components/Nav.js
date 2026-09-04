@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 
 export default function Nav() {
@@ -10,7 +11,17 @@ export default function Nav() {
   return (
     <nav className="site-nav">
       <Link className="nav-logo" href="/">
-        Strange <em>In</em>
+        <Image
+          src="/logo.jpeg"
+          alt="Strange In — Connecting"
+          width={40}
+          height={40}
+          className="nav-logo-img"
+          priority
+        />
+        <span className="nav-logo-text">
+          Strange <em>In</em>
+        </span>
       </Link>
 
       <button

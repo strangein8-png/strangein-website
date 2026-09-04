@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import ContactModal from './ContactModal';
 
 export default function Footer() {
@@ -7,7 +8,13 @@ export default function Footer() {
       <div className="foot-grid">
         <div>
           <div className="foot-brand">
-            Strange <em>In</em>
+            <Image
+              src="/logo.jpeg"
+              alt="Strange In — Connecting"
+              width={48}
+              height={48}
+              className="foot-logo-img"
+            />
           </div>
           <p>
             Connecting hearts, one story at a time. Match, chat, and blog your
