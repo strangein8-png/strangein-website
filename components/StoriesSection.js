@@ -51,6 +51,9 @@ export default function StoriesSection() {
         <div className="section-eyebrow" style={{ justifyContent: 'center' }}>
           Real matches
         </div>
+        <h2 style={{ textAlign: 'center' }}>
+          Real <em>Stories</em>
+        </h2>
       </Reveal>
 
       {error && <p className="section-sub">Couldn&rsquo;t load stories right now.</p>}
