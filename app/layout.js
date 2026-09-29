@@ -2,7 +2,6 @@ import './globals.css';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import CookieBanner from '@/components/CookieBanner';
-import OneSignalInit from '@/components/OneSignalInit';
 
 export const metadata = {
   title: 'Strange In — Strangers, until they aren\u2019t',
@@ -33,7 +32,6 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body>
-        <OneSignalInit />
         <Nav />
         {children}
         <Footer />
