@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getBlogs, createBlog } from '@/lib/blogsApi';
 import { isAuthorized, unauthorizedResponse } from '@/lib/auth';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 // GET /api/blogs?category=Travel
 export async function GET(request) {

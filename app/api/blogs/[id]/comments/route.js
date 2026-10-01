@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getBlogComments, addBlogComment } from '@/lib/blogsApi';
+import { validateCommentText } from '@/lib/validateComment';
 
 export async function GET(_request, { params }) {
   try {
@@ -13,9 +14,16 @@ export async function GET(_request, { params }) {
 export async function POST(request, { params }) {
   try {
     const { name, text } = await request.json();
+
     if (!name?.trim() || !text?.trim()) {
       return NextResponse.json({ error: 'Name and comment text are required.' }, { status: 400 });
     }
+
+    const validationError = validateCommentText(text) || validateCommentText(name);
+    if (validationError) {
+      return NextResponse.json({ error: validationError }, { status: 400 });
+    }
+
     const comments = await addBlogComment(params.id, { name: name.trim(), text: text.trim() });
     return NextResponse.json({ comments }, { status: 201 });
   } catch (err) {

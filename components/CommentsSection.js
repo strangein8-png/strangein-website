@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { validateCommentText } from '@/lib/validateComment';
 
 export default function CommentsSection({ id, endpoint = 'blogs' }) {
   const [comments, setComments] = useState([]);
@@ -21,10 +22,18 @@ export default function CommentsSection({ id, endpoint = 'blogs' }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
+
     if (!name.trim() || !text.trim()) {
       setError('Please add your name and a comment.');
       return;
     }
+
+    const textError = validateCommentText(text) || validateCommentText(name);
+    if (textError) {
+      setError(textError);
+      return;
+    }
+
     setSubmitting(true);
     setError('');
     try {
@@ -71,7 +80,7 @@ export default function CommentsSection({ id, endpoint = 'blogs' }) {
         />
         <textarea
           className="comment-textarea"
-          placeholder="Write a comment…"
+          placeholder="Write a comment… (text only, no links)"
           value={text}
           onChange={(e) => setText(e.target.value)}
           maxLength={1000}
